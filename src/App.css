@@ -1,0 +1,132 @@
+/* src/App.css */
+.app-inner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.app-title {
+  margin-bottom: 40px;
+}
+
+.main-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.task-list-container, .side-container {
+  background: #f0f4f8;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task-list-container {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.side-container {
+  flex: 0.4;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task-item input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.task-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.progress-container, .new-task-container {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  height: 20px;
+  margin: 10px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #76c7c0;
+}
+
+.new-task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.new-task-form input,
+.new-task-form select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.new-task-form button {
+  padding: 10px;
+  background-color: #76c7c0;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.icon-buttons {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.icon-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f0f4f8;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  width: 100px;
+  text-align: center;
+  margin-right: 5rem;
+  
+}
+
+.icon-button span {
+  margin-top: 5px;
+}
