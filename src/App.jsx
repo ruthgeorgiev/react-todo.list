@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Typography } from './components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBroom, faLaptop, faShoppingCart, faBook, faHeartbeat } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 
 const App = () => {
@@ -15,16 +17,50 @@ const App = () => {
 
   const [newTaskName, setNewTaskName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Cleaning');
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editedTaskName, setEditedTaskName] = useState('');
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const tasksPerPage = 5;
+
+  useEffect(() => {
+    const savedTasks = localStorage.getItem('tasks');
+    if (savedTasks) {
+      setTasks(JSON.parse(savedTasks));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
   const handleAddTask = (e) => {
     e.preventDefault();
     if (newTaskName.trim() && selectedCategory) {
       setTasks(prevTasks => ({
         ...prevTasks,
-        [selectedCategory]: [...prevTasks[selectedCategory], { id: Date.now(), name: newTaskName, completed: false }]
+        [selectedCategory]: [...prevTasks[selectedCategory], { id: uuidv4(), name: newTaskName, completed: false }]
       }));
       setNewTaskName('');
+      setCurrentPage(Math.ceil((tasks[selectedCategory].length + 1) / tasksPerPage)); // Move to the last page
     }
+  };
+
+  const handleEditTask = (task) => {
+    setEditingTaskId(task.id);
+    setEditedTaskName(task.name);
+  };
+
+  const handleSaveTask = (category, taskId) => {
+    setTasks(prevTasks => ({
+      ...prevTasks,
+      [category]: prevTasks[category].map(task =>
+        task.id === taskId ? { ...task, name: editedTaskName } : task
+      )
+    }));
+    setEditingTaskId(null);
+    setEditedTaskName('');
   };
 
   const handleToggleTask = (category, taskId) => {
@@ -41,6 +77,7 @@ const App = () => {
       ...prevTasks,
       [category]: prevTasks[category].filter(task => task.id !== taskId)
     }));
+    setCurrentPage(1); // Reset to the first page after deletion
   };
 
   const calculateProgress = () => {
@@ -52,33 +89,74 @@ const App = () => {
 
   const progress = calculateProgress();
 
+  // Pagination logic
+  const indexOfLastTask = currentPage * tasksPerPage;
+  const indexOfFirstTask = indexOfLastTask - tasksPerPage;
+  const currentTasks = tasks[selectedCategory].slice(indexOfFirstTask, indexOfLastTask);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(tasks[selectedCategory].length / tasksPerPage)) setCurrentPage(currentPage + 1);
+  };
+
   return (
     <Container>
       <div className="app-inner-container">
-        <Typography fontSize="24px" bold={true} className="app-title">Simple TodoList</Typography>
+        <Typography fontSize="24px" bold={true} style={{ marginBottom: '20px' }} className="app-title">
+          Simple TodoList
+        </Typography>
         <div className="main-content">
           <div className="task-list-container">
             <Typography fontSize="18px" bold={true}>List of {selectedCategory} Tasks</Typography>
             <div className="task-list">
-              {tasks[selectedCategory].map(task => (
+              {currentTasks.map(task => (
                 <div className="task-item" key={task.id}>
-                  <input
-                    type="checkbox"
-                    checked={task.completed}
-                    onChange={() => handleToggleTask(selectedCategory, task.id)}
-                  />
-                  <span
-                    onClick={() => handleToggleTask(selectedCategory, task.id)}
-                    style={{ textDecoration: task.completed ? 'line-through' : 'none', cursor: 'pointer' }}
-                  >
-                    {task.name}
-                  </span>
+                  {editingTaskId === task.id ? (
+                    <input
+                      type="text"
+                      value={editedTaskName}
+                      onChange={(e) => setEditedTaskName(e.target.value)}
+                    />
+                  ) : (
+                    <>
+                      <input
+                        type="checkbox"
+                        className="custom-checkbox"
+                        checked={task.completed}
+                        onChange={() => handleToggleTask(selectedCategory, task.id)}
+                      />
+                      <span
+                        onClick={() => handleToggleTask(selectedCategory, task.id)}
+                        style={{ textDecoration: task.completed ? 'line-through' : 'none', cursor: 'pointer' }}
+                      >
+                        {task.name}
+                      </span>
+                    </>
+                  )}
                   <div className="task-actions">
-                    <button onClick={() => handleToggleTask(selectedCategory, task.id)}>✏️</button>
-                    <button onClick={() => handleDeleteTask(selectedCategory, task.id)}>🗑️</button>
+                    {editingTaskId === task.id ? (
+                      <button onClick={() => handleSaveTask(selectedCategory, task.id)}>
+                        <FontAwesomeIcon icon={faSave} style={{ color: 'blue' }} />
+                      </button>
+                    ) : (
+                      <button onClick={() => handleEditTask(task)}>
+                        <FontAwesomeIcon icon={faEdit} style={{ color: 'green' }} />
+                      </button>
+                    )}
+                    <button onClick={() => handleDeleteTask(selectedCategory, task.id)}>
+                      <FontAwesomeIcon icon={faTrashAlt} style={{ color: 'blue' }} />
+                    </button>
                   </div>
                 </div>
               ))}
+            </div>
+            <div className="pagination">
+              <button onClick={handlePrevPage} disabled={currentPage === 1}>Previous</button>
+              <span>Page {currentPage} of {Math.ceil(tasks[selectedCategory].length / tasksPerPage)}</span>
+              <button onClick={handleNextPage} disabled={currentPage === Math.ceil(tasks[selectedCategory].length / tasksPerPage)}>Next</button>
             </div>
           </div>
           <div className="side-container">

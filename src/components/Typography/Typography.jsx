@@ -12,6 +12,7 @@ function Typography({ children, fontSize = '16px', bold = false }) {
 Typography.propTypes = {
   children: PropTypes.node.isRequired,
   fontSize: PropTypes.string,
+
   bold: PropTypes.bool,
 };
 

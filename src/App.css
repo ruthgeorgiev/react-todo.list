@@ -1,4 +1,3 @@
-/* src/App.css */
 .app-inner-container {
   display: flex;
   flex-direction: column;
@@ -7,7 +6,7 @@
 }
 
 .app-title {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 
 .main-content {
@@ -27,6 +26,10 @@
 .task-list-container {
   flex: 1;
   margin-right: 20px;
+  display: flex;
+  flex-direction: column; /* Ensure children are stacked vertically */
+  justify-content: space-between; /* Pushes pagination to the bottom */
+  min-height: 400px; /* Ensure minimum height for the container */
 }
 
 .side-container {
@@ -41,6 +44,7 @@
   flex-direction: column;
   gap: 10px;
   margin-top: 10px;
+  flex-grow: 1; /* Allow task list to grow and fill available space */
 }
 
 .task-item {
@@ -124,9 +128,32 @@
   width: 100px;
   text-align: center;
   margin-right: 5rem;
-  
 }
 
 .icon-button span {
   margin-top: 5px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #76c7c0;
+  color: white;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  margin: 0 10px;
 }
