@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography } from './components';
+import { HashRouter as Router } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBroom, faLaptop, faShoppingCart, faBook, faHeartbeat } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 import Contentful from './components/Contentful';
+import Container from './components/Container/Container'; // Import the Container component
+import Typography from './components/Typography/Typography'; // Import the Typography component
 
 const App = () => {
   const [tasks, setTasks] = useState({
@@ -106,7 +108,7 @@ const App = () => {
   };
 
   return (
-    <>
+    <Router>
       <Container>
         <div className="app-inner-container">
           <Typography fontSize="24px" bold={true} style={{ marginBottom: '20px' }} className="app-title">
@@ -219,7 +221,7 @@ const App = () => {
         </div>
       </Container>
       <Contentful />
-    </>
+    </Router>
   );
 };
 

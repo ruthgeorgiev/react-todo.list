@@ -1,19 +1,19 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-function Typography({ children, fontSize = '16px', bold = false }) {
+
+const Typography = ({ fontSize, bold, children, style, className }) => {
   return (
-    <div style={{ fontSize: fontSize, fontWeight: bold ? '700' : '400' }}>
+    <div
+      className={className}
+      style={{
+        fontSize,
+        fontWeight: bold ? 'bold' : 'normal',
+        ...style
+      }}
+    >
       {children}
     </div>
   );
-}
-
-Typography.propTypes = {
-  children: PropTypes.node.isRequired,
-  fontSize: PropTypes.string,
-
-  bold: PropTypes.bool,
 };
 
 export default Typography;

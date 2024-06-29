@@ -1,12 +1,8 @@
 import React from 'react';
-import style from "./Container.module.css";
+import './Container.module.css'; // Assuming you have some CSS for this component
 
-function Container({ children }) {
-  return (
-    <div className={style.container}>
-      {children}
-    </div>
-  );
-}
+const Container = ({ children }) => {
+  return <div className="container">{children}</div>;
+};
 
 export default Container;
