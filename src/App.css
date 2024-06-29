@@ -159,3 +159,10 @@
 .pagination span {
   margin: 0 10px;
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px; /* Add some spacing from the task list */
+}

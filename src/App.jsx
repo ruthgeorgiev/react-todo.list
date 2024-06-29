@@ -5,6 +5,7 @@ import { faBroom, faLaptop, faShoppingCart, faBook, faHeartbeat } from '@fortawe
 import { faSave, faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuidv4 } from 'uuid';
 import './App.css';
+import Contentful from './components/Contentful';
 
 const App = () => {
   const [tasks, setTasks] = useState({
@@ -94,271 +95,132 @@ const App = () => {
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
   const currentTasks = tasks[selectedCategory].slice(indexOfFirstTask, indexOfLastTask);
 
+  const totalPages = Math.ceil(tasks[selectedCategory].length / tasksPerPage);
+
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
   const handleNextPage = () => {
-    if (currentPage < Math.ceil(tasks[selectedCategory].length / tasksPerPage)) setCurrentPage(currentPage + 1);
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
   return (
-    <Container>
-      <div className="app-inner-container">
-        <Typography fontSize="24px" bold={true} style={{ marginBottom: '20px' }} className="app-title">
-          Simple TodoList
-        </Typography>
-        <div className="main-content">
-          <div className="task-list-container">
-            <Typography fontSize="18px" bold={true}>List of {selectedCategory} Tasks</Typography>
-            <div className="task-list">
-              {currentTasks.map(task => (
-                <div className="task-item" key={task.id}>
-                  {editingTaskId === task.id ? (
-                    <input
-                      type="text"
-                      value={editedTaskName}
-                      onChange={(e) => setEditedTaskName(e.target.value)}
-                    />
-                  ) : (
-                    <>
-                      <input
-                        type="checkbox"
-                        className="custom-checkbox"
-                        checked={task.completed}
-                        onChange={() => handleToggleTask(selectedCategory, task.id)}
-                      />
-                      <span
-                        onClick={() => handleToggleTask(selectedCategory, task.id)}
-                        style={{ textDecoration: task.completed ? 'line-through' : 'none', cursor: 'pointer' }}
-                      >
-                        {task.name}
-                      </span>
-                    </>
-                  )}
-                  <div className="task-actions">
+    <>
+      <Container>
+        <div className="app-inner-container">
+          <Typography fontSize="24px" bold={true} style={{ marginBottom: '20px' }} className="app-title">
+            Simple TodoList
+          </Typography>
+          <div className="main-content">
+            <div className="task-list-container">
+              <Typography fontSize="18px" bold={true}>List of {selectedCategory} Tasks</Typography>
+              <div className="task-list">
+                {currentTasks.map(task => (
+                  <div className="task-item" key={task.id}>
                     {editingTaskId === task.id ? (
-                      <button onClick={() => handleSaveTask(selectedCategory, task.id)}>
-                        <FontAwesomeIcon icon={faSave} style={{ color: 'black' }} />
-                      </button>
+                      <input
+                        type="text"
+                        value={editedTaskName}
+                        onChange={(e) => setEditedTaskName(e.target.value)}
+                      />
                     ) : (
-                      <button onClick={() => handleEditTask(task)}>
-                        <FontAwesomeIcon icon={faEdit} style={{ color: 'green' }} />
-                      </button>
+                      <>
+                        <input
+                          type="checkbox"
+                          className="custom-checkbox"
+                          checked={task.completed}
+                          onChange={() => handleToggleTask(selectedCategory, task.id)}
+                        />
+                        <span
+                          onClick={() => handleToggleTask(selectedCategory, task.id)}
+                          style={{ textDecoration: task.completed ? 'line-through' : 'none', cursor: 'pointer' }}
+                        >
+                          {task.name}
+                        </span>
+                      </>
                     )}
-                    <button onClick={() => handleDeleteTask(selectedCategory, task.id)}>
-                      <FontAwesomeIcon icon={faTrashAlt} style={{ color: 'blue' }} />
-                    </button>
+                    <div className="task-actions">
+                      {editingTaskId === task.id ? (
+                        <button onClick={() => handleSaveTask(selectedCategory, task.id)}>
+                          <FontAwesomeIcon icon={faSave} style={{ color: 'black' }} />
+                        </button>
+                      ) : (
+                        <button onClick={() => handleEditTask(task)}>
+                          <FontAwesomeIcon icon={faEdit} style={{ color: 'green' }} />
+                        </button>
+                      )}
+                      <button onClick={() => handleDeleteTask(selectedCategory, task.id)}>
+                        <FontAwesomeIcon icon={faTrashAlt} style={{ color: 'blue' }} />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-            <div className="pagination">
-              <button onClick={handlePrevPage} disabled={currentPage === 1}>Previous</button>
-              <span>Page {currentPage} of {Math.ceil(tasks[selectedCategory].length / tasksPerPage)}</span>
-              <button onClick={handleNextPage} disabled={currentPage === Math.ceil(tasks[selectedCategory].length / tasksPerPage)}>Next</button>
-            </div>
-          </div>
-          <div className="side-container">
-            <div className="progress-container">
-              <Typography fontSize="16px">Today's Progress</Typography>
-              <div className="progress-bar">
-                <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                ))}
               </div>
-              <Typography fontSize="16px">{progress.toFixed(0)}%</Typography>
+              <div className="pagination">
+                <div className="join">
+                  <button className="join-item btn" onClick={handlePrevPage} disabled={currentPage === 1}>«</button>
+                  <button className="join-item btn">Page {totalPages > 0 ? currentPage : 0} of {totalPages}</button>
+                  <button className="join-item btn" onClick={handleNextPage} disabled={currentPage === totalPages}>»</button>
+                </div>
+              </div>
             </div>
-            <div className="new-task-container">
-              <Typography fontSize="16px">Add New Task</Typography>
-              <form className="new-task-form" onSubmit={handleAddTask}>
-                <input
-                  type="text"
-                  placeholder="Task Name"
-                  value={newTaskName}
-                  onChange={(e) => setNewTaskName(e.target.value)}
-                />
-                <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-                  <option value="Cleaning">Cleaning</option>
-                  <option value="Work">Work</option>
-                  <option value="Errands">Errands</option>
-                  <option value="Learning">Learning</option>
-                  <option value="Health">Health</option>
-                </select>
-                <button type="submit">Add</button>
-              </form>
+            <div className="side-container">
+              <div className="progress-container">
+                <Typography fontSize="16px">Today's Progress</Typography>
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                </div>
+                <Typography fontSize="16px">{progress.toFixed(0)}%</Typography>
+              </div>
+              <div className="new-task-container">
+                <Typography fontSize="16px">Add New Task</Typography>
+                <form className="new-task-form" onSubmit={handleAddTask}>
+                  <input
+                    type="text"
+                    placeholder="Task Name"
+                    value={newTaskName}
+                    onChange={(e) => setNewTaskName(e.target.value)}
+                  />
+                  <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+                    <option value="Cleaning">Cleaning</option>
+                    <option value="Work">Work</option>
+                    <option value="Errands">Errands</option>
+                    <option value="Learning">Learning</option>
+                    <option value="Health">Health</option>
+                  </select>
+                  <button type="submit">Add</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div className="icon-buttons">
+            <div className="icon-button" onClick={() => setSelectedCategory('Cleaning')}>
+              <FontAwesomeIcon icon={faBroom} size="2x" />
+              <span>Cleaning</span>
+            </div>
+            <div className="icon-button" onClick={() => setSelectedCategory('Work')}>
+              <FontAwesomeIcon icon={faLaptop} size="2x" />
+              <span>Work</span>
+            </div>
+            <div className="icon-button" onClick={() => setSelectedCategory('Errands')}>
+              <FontAwesomeIcon icon={faShoppingCart} size="2x" />
+              <span>Errands</span>
+            </div>
+            <div className="icon-button" onClick={() => setSelectedCategory('Learning')}>
+              <FontAwesomeIcon icon={faBook} size="2x" />
+              <span>Learning</span>
+            </div>
+            <div className="icon-button" onClick={() => setSelectedCategory('Health')}>
+              <FontAwesomeIcon icon={faHeartbeat} size="2x" />
+              <span>Health</span>
             </div>
           </div>
         </div>
-        <div className="icon-buttons">
-          <div className="icon-button" onClick={() => setSelectedCategory('Cleaning')}>
-            <FontAwesomeIcon icon={faBroom} size="2x" />
-            <span>Cleaning</span>
-          </div>
-          <div className="icon-button" onClick={() => setSelectedCategory('Work')}>
-            <FontAwesomeIcon icon={faLaptop} size="2x" />
-            <span>Work</span>
-          </div>
-          <div className="icon-button" onClick={() => setSelectedCategory('Errands')}>
-            <FontAwesomeIcon icon={faShoppingCart} size="2x" />
-            <span>Errands</span>
-          </div>
-          <div className="icon-button" onClick={() => setSelectedCategory('Learning')}>
-            <FontAwesomeIcon icon={faBook} size="2x" />
-            <span>Learning</span>
-          </div>
-          <div className="icon-button" onClick={() => setSelectedCategory('Health')}>
-            <FontAwesomeIcon icon={faHeartbeat} size="2x" />
-            <span>Health</span>
-          </div>
-        </div>
-      </div>
-    </Container>
+      </Container>
+      <Contentful />
+    </>
   );
 };
 
 export default App;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

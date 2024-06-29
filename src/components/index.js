@@ -1,2 +1,4 @@
-export { default as Container} from "./Container/Container";
-export {default as Typography} from "./Typography/Typography"
+// src/components/index.js
+export { default as Container } from "./Container/Container";
+export { default as Typography } from "./Typography/Typography";
+

@@ -1,0 +1,18 @@
+version: '3'
+
+networks:
+  todo-app:
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-todo-app
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: todo
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+    networks:
+      - todo-app
