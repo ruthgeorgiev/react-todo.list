@@ -18,7 +18,7 @@ body, html {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 80%;
   max-width: 1200px;
-  margin: 20px auto; /* Adjusted margin to be smaller on top and bottom */
+  margin: auto;
 }
 
 .app-inner-container {
@@ -34,7 +34,6 @@ body, html {
 
 .main-content {
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
   width: 100%;
   margin-bottom: 20px;
@@ -45,23 +44,22 @@ body, html {
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  flex: 1;
-  margin-bottom: 20px;
 }
 
 .task-list-container {
+  flex: 1;
+  margin-right: 20px;
   display: flex;
   flex-direction: column; /* Ensure children are stacked vertically */
   justify-content: space-between; /* Pushes pagination to the bottom */
   min-height: 400px; /* Ensure minimum height for the container */
-  width: 100%;
 }
 
 .side-container {
+  flex: 0.4;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 100%;
 }
 
 .task-list {
@@ -70,7 +68,6 @@ body, html {
   gap: 10px;
   margin-top: 10px;
   flex-grow: 1; /* Allow task list to grow and fill available space */
-  overflow-y: auto; /* Ensure scrolling for long lists */
 }
 
 .task-item {
@@ -81,12 +78,6 @@ body, html {
   background-color: #fff;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  word-wrap: break-word; /* Ensure long words break */
-}
-
-.task-item span {
-  flex-grow: 1;
-  margin-right: 10px;
 }
 
 .task-item input[type="checkbox"] {
@@ -158,14 +149,12 @@ body, html {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   width: 100px;
-  height: 70px;
   text-align: center;
-  margin-right: 5rem;
+  margin-right: 3rem;
 }
 
 .icon-button span {
   margin-top: 5px;
-  font-size: 14px;
 }
 
 .pagination {
@@ -191,20 +180,4 @@ body, html {
 
 .pagination span {
   margin: 0 10px;
-}
-
-/* Ensure responsive layout for small screens */
-@media (max-width: 768px) {
-  .main-content {
-    flex-direction: column;
-  }
-
-  .task-list-container, .side-container {
-    width: 100%;
-    margin-right: 0;
-  }
-
-  .icon-button {
-    margin-right: 1rem;
-  }
 }

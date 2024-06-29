@@ -6,8 +6,8 @@ import { faSave, faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons'
 import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 import Contentful from './components/Contentful';
-import Container from './components/Container/Container'; // Import the Container component
-import Typography from './components/Typography/Typography'; // Import the Typography component
+import Container from './components/Container/Container';
+import Typography from './components/Typography/Typography';
 
 const App = () => {
   const [tasks, setTasks] = useState({
@@ -23,7 +23,6 @@ const App = () => {
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editedTaskName, setEditedTaskName] = useState('');
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const tasksPerPage = 5;
 
@@ -46,7 +45,7 @@ const App = () => {
         [selectedCategory]: [...prevTasks[selectedCategory], { id: uuidv4(), name: newTaskName, completed: false }]
       }));
       setNewTaskName('');
-      setCurrentPage(Math.ceil((tasks[selectedCategory].length + 1) / tasksPerPage)); // Move to the last page
+      setCurrentPage(Math.ceil((tasks[selectedCategory].length + 1) / tasksPerPage));
     }
   };
 
@@ -80,7 +79,7 @@ const App = () => {
       ...prevTasks,
       [category]: prevTasks[category].filter(task => task.id !== taskId)
     }));
-    setCurrentPage(1); // Reset to the first page after deletion
+    setCurrentPage(1);
   };
 
   const calculateProgress = () => {
@@ -92,7 +91,6 @@ const App = () => {
 
   const progress = calculateProgress();
 
-  // Pagination logic
   const indexOfLastTask = currentPage * tasksPerPage;
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
   const currentTasks = tasks[selectedCategory].slice(indexOfFirstTask, indexOfLastTask);
