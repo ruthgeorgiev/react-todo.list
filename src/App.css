@@ -181,3 +181,24 @@ body, html {
 .pagination span {
   margin: 0 10px;
 }
+
+.warning-banner {
+  background-color: #ceffcb;
+  color: #28603b;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #42a968;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.important-badge {
+  background-color: yellow;
+  color: rgb(8, 116, 57);
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 3px;
+  margin-right: 10px;
+}
+
+

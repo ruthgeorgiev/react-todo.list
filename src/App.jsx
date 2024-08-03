@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { HashRouter as Router } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBroom, faLaptop, faShoppingCart, faBook, faHeartbeat } from '@fortawesome/free-solid-svg-icons';
-import { faSave, faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import { faSave, faEdit, faTrashAlt, faStar, faStarHalfAlt } from '@fortawesome/free-regular-svg-icons'; 
 import { v4 as uuidv4 } from 'uuid';
 import './App.css';
-import Contentful from './components/Contentful';
 import Container from './components/Container/Container';
 import Typography from './components/Typography/Typography';
+import WarningBanner from './components/WarningBanner';
+import Contentful from './components/Contentful';
 
 const App = () => {
   const [tasks, setTasks] = useState({
@@ -42,7 +43,7 @@ const App = () => {
     if (newTaskName.trim() && selectedCategory) {
       setTasks(prevTasks => ({
         ...prevTasks,
-        [selectedCategory]: [...prevTasks[selectedCategory], { id: uuidv4(), name: newTaskName, completed: false }]
+        [selectedCategory]: [...prevTasks[selectedCategory], { id: uuidv4(), name: newTaskName, completed: false, isImportant: false }]
       }));
       setNewTaskName('');
       setCurrentPage(Math.ceil((tasks[selectedCategory].length + 1) / tasksPerPage));
@@ -70,6 +71,15 @@ const App = () => {
       ...prevTasks,
       [category]: prevTasks[category].map(task =>
         task.id === taskId ? { ...task, completed: !task.completed } : task
+      )
+    }));
+  };
+
+  const handleToggleImportant = (category, taskId) => {
+    setTasks(prevTasks => ({
+      ...prevTasks,
+      [category]: prevTasks[category].map(task =>
+        task.id === taskId ? { ...task, isImportant: !task.isImportant } : task
       )
     }));
   };
@@ -105,6 +115,8 @@ const App = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
+  const hasTasks = currentTasks.length > 0;
+
   return (
     <Router>
       <Container>
@@ -112,12 +124,19 @@ const App = () => {
           <Typography fontSize="24px" bold={true} style={{ marginBottom: '20px' }} className="app-title">
             Simple TodoList
           </Typography>
+          <Contentful hasTasks={hasTasks} />
+          { !hasTasks ? 
+          <WarningBanner message={`No tasks available in this category! Current task count: ${currentTasks.length}`} /> 
+          : null
+          }
+  
           <div className="main-content">
             <div className="task-list-container">
               <Typography fontSize="18px" bold={true}>List of {selectedCategory} Tasks</Typography>
               <div className="task-list">
                 {currentTasks.map(task => (
                   <div className="task-item" key={task.id}>
+                    {task.isImportant && <span className="important-badge">Important</span>}
                     {editingTaskId === task.id ? (
                       <input
                         type="text"
@@ -141,6 +160,9 @@ const App = () => {
                       </>
                     )}
                     <div className="task-actions">
+                      <button onClick={() => handleToggleImportant(selectedCategory, task.id)}>
+                        <FontAwesomeIcon icon={task.isImportant ? faStar : faStarHalfAlt} style={{ color: task.isImportant ? 'gold' : 'grey' }} />
+                      </button>
                       {editingTaskId === task.id ? (
                         <button onClick={() => handleSaveTask(selectedCategory, task.id)}>
                           <FontAwesomeIcon icon={faSave} style={{ color: 'black' }} />
@@ -218,7 +240,6 @@ const App = () => {
           </div>
         </div>
       </Container>
-      <Contentful />
     </Router>
   );
 };

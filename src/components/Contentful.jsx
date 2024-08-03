@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Contentful() {
+const Contentful = () => {
   return (
     <h1></h1>
   );
